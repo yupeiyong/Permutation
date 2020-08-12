@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_color">#00BDA0</color>
+    <color name="page_bg">#F4F4F4</color>
+    <color name="select_view_bg">#EBEBEB</color>
+    <color name="text_color_default">#000</color>
+
+    <color name="red">#f00</color>
+    <color name="orange">#FFC002</color>
+    <color name="yellow">#ff0</color>
+    <color name="white">#FFF</color>
+    <color name="black">#000</color>
+    <color name="gray">#ccc</color>
+    <color name="black_33">#333</color>
+    <color name="black_66">#666</color>
+    <color name="black_99">#999</color>
+    <color name="black_cc">#ccc</color>
+    <color name="black_dd">#ddd</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>

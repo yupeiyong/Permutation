@@ -1,0 +1,92 @@
+<resources>
+    <!-- 主题 -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/black_99</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/main_color</item>
+    </style>
+
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--activity切换动画-->
+        <item name="android:activityOpenEnterAnimation">@anim/activity_anim_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_anim_out</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_anim_no</item>
+    </style>
+
+    <!--首页4个选项-->
+    <style name="RadioButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">1dp</item>
+        <item name="android:textSize">@dimen/textSize12</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!--默认文字样式-->
+    <style name="text_default">
+        <item name="android:textColor">@color/text_color_default</item>
+        <item name="android:textSize">@dimen/text_size_default</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <!--线条-->
+    <style name="base_line_tag" parent="text_default">
+        <item name="android:paddingLeft">@dimen/textSize5</item>
+        <item name="android:paddingRight">@dimen/textSize5</item>
+        <item name="android:paddingTop">@dimen/textSize2</item>
+        <item name="android:textSize">@dimen/textSize12</item>
+        <item name="android:paddingBottom">@dimen/textSize2</item>
+    </style>
+
+    <!--默认按钮-->
+    <style name="base_btn_sure">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/textSize16</item>
+        <item name="android:paddingLeft">@dimen/textSize10</item>
+        <item name="android:paddingRight">@dimen/textSize10</item>
+        <item name="android:layout_marginLeft">@dimen/textSize10</item>
+        <item name="android:layout_marginRight">@dimen/textSize10</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
+    <style name="textbox_style">
+        <item name="android:textSize">@dimen/textSize16</item>
+        <item name="android:paddingLeft">@dimen/textSize10</item>
+        <item name="android:paddingRight">@dimen/textSize10</item>
+        <item name="android:paddingTop">@dimen/textSize10</item>
+        <item name="android:paddingBottom">@dimen/textSize10</item>
+        <item name="android:layout_marginLeft">@dimen/textSize10</item>
+<!--        <item name="android:layout_marginRight">@dimen/textSize10</item>-->
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:hint">输入号码，多个用空格隔开</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>
