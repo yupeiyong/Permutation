@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(numbers.size()==0)
             throw new Exception("号码为空！");
 
-//        if(numbers.size()>9)
-//            throw new Exception("号码个数不能超过9个！");
+        if(numbers.size()>9)
+            throw new Exception("号码个数不能超过9个！");
 
         return numbers;
     }
