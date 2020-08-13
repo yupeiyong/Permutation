@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_number_list);
 
         setCustomActionBar();
-        Intent intent=getIntent();
-        List<List<String>>numbers=  (List<List<String>>) getIntent().getSerializableExtra("111");
+        List<List<String>>numbers=  (List<List<String>>) getIntent().getSerializableExtra(Constant.NumberList);
+        ListView numberView=findViewById(R.id.lv_number);
     }
 
     private void setCustomActionBar() {
