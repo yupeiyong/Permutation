@@ -24,6 +24,8 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         setCustomActionBar();
         List<List<String>>numbers=  (List<List<String>>) getIntent().getSerializableExtra(Constant.NumberList);
         ListView numberView=findViewById(R.id.lv_number);
+        NumberAdapter adapter=new NumberAdapter(numbers);
+        numberView.setAdapter(adapter);
     }
 
     private void setCustomActionBar() {
