@@ -44,6 +44,7 @@ public class NumberAdapter extends BaseAdapter {
         if(view==null){
             view=LayoutInflater.from(_context).inflate(R.layout.item_number,viewGroup,false);
             holder=new ViewHolder();
+            holder.number=view.findViewById(R.id.number);
             holder.first=view.findViewById(R.id.first);
             holder.second=view.findViewById(R.id.second);
             holder.third=view.findViewById(R.id.third);
@@ -56,6 +57,7 @@ public class NumberAdapter extends BaseAdapter {
         }
         List<Integer>numberList=_numbers.get(i);
         if(numberList!=null){
+            holder.number.setText(String.valueOf(i+1));
             holder.first.setText(String.valueOf(numberList.get(0)));
             holder.second.setText(String.valueOf(numberList.get(1)));
             holder.third.setText(String.valueOf(numberList.get(2)));
@@ -67,6 +69,7 @@ public class NumberAdapter extends BaseAdapter {
     }
 
     class ViewHolder{
+        TextView number;
         TextView first;
         TextView second;
         TextView third;

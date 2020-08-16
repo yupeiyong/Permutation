@@ -8,6 +8,15 @@
     tools:context=".NumberListActivity">
     <View
         style="@style/list_item_seperator_layout"/>
+    <TextView
+        android:id="@+id/txt_number_total"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="@color/red"
+        android:paddingLeft="20dp"/>
+    <View
+        style="@style/list_item_seperator_layout"/>
     <include
         layout="@layout/list_header"/>
     <View

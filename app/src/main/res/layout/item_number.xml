@@ -45,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:padding="2dip" />
+                android:paddingLeft="8dp"
+                android:paddingTop="2dip"/>
             <View
                 style="@style/list_item_cell_seperator_layout"/>
             <TextView

@@ -27,10 +27,12 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
 
         setCustomActionBar();
         //List<List<String>>numbers=  (List<List<String>>) getIntent().getParcelableExtra(Constant.NumberList);
+        TextView txtTotal=findViewById(R.id.txt_number_total);
         List<List<Integer>>numbers=(List<List<Integer>>)ModelStorage.getInstance().getModel(Constant.NumberListKey);
         ListView numberView=findViewById(R.id.lv_number);
         NumberAdapter adapter=new NumberAdapter(numbers);
         numberView.setAdapter(adapter);
+        txtTotal.setText("共有"+ String.valueOf(numbers.size())+"条数据");
     }
 
     private void setCustomActionBar() {

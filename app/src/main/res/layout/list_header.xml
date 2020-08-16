@@ -15,6 +15,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="20dp"
                 android:padding="2dip"/>
             <View
                 style="@style/list_item_cell_seperator_layout"/>
