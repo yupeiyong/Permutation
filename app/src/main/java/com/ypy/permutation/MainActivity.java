@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,9 +36,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Date last=new Date(2020,7,30);
+        int y,m,d;
+        Calendar cal=Calendar.getInstance();
+        y=cal.get(Calendar.YEAR);
+        m=cal.get(Calendar.MONTH);
+        d=cal.get(Calendar.DATE);
+        Date now=new Date(y,m,d);
+        if(now.after(last))
+            return;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setCustomActionBar();
         Button btnGenerate=findViewById(R.id.btn_generate);
         btnGenerate.setOnClickListener(this);
@@ -67,14 +79,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id){
             case R.id.btn_generate:
 
-                List<List<String>>numbers=new ArrayList<>();
+                List<List<Integer>>numbers=new ArrayList<>();
                 try{
-                    List<String> n1=getList(first);
-                    List<String> n2=getList(second);
-                    List<String> n3=getList(third);
-                    List<String> n4=getList(fourth);
-                    List<String> n5=getList(fifth);
-                    List<String> n6=getList(sixth);
+                    List<Integer> n1=getList(first);
+                    List<Integer> n2=getList(second);
+                    List<Integer> n3=getList(third);
+                    List<Integer> n4=getList(fourth);
+                    List<Integer> n5=getList(fifth);
+                    List<Integer> n6=getList(sixth);
 
                     numbers.add(n1);
                     numbers.add(n2);
@@ -85,42 +97,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     NumberGenerateTask task=new NumberGenerateTask(this);
 
                     task.execute(numbers);
-//                    for(int x1=0;x1<n1.size();x1++){
-//                        for(int x2=0;x2<n2.size();x2++){
-//                            for(int x3=0;x3<n3.size();x3++){
-//                                for(int x4=0;x4<n4.size();x4++){
-//                                    for(int x5=0;x5<n5.size();x5++){
-//                                        for(int x6=0;x6<n6.size();x6++){
-//                                            String number1=n1.get(x1);
-//                                            String number2=n2.get(x2);
-//                                            String number3=n3.get(x3);
-//                                            String number4=n4.get(x4);
-//                                            String number5=n5.get(x5);
-//                                            String number6=n6.get(x6);
-//
-//                                            List<String>numberList=new ArrayList<>();
-//                                            numberList.add(number1);
-//                                            numberList.add(number2);
-//                                            numberList.add(number3);
-//                                            numberList.add(number4);
-//                                            numberList.add(number5);
-//                                            numberList.add(number6);
-//                                            HashSet<String>hs=new HashSet<>(numberList);
-//                                            if(hs.size()<6){
-//                                                continue;
-//                                            }
-//                                            String[]numberArray=(String[])numberList.toArray(new String[numberList.size()]);
-//                                            String sign=Arrays.toString(numberArray);
-//                                            if(!signs.contains(sign)){
-//                                                numbers.add(numberList);
-//                                            }
-//                                            signs.add(sign);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
                 }catch (Exception ex){
                     ex.printStackTrace();
                     Toast.makeText(this,ex.getMessage(),Toast.LENGTH_LONG).show();
@@ -130,13 +106,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private List<String> getList(EditText textbox) throws Exception {
+    private List<Integer> getList(EditText textbox) throws Exception {
         String str=textbox.getText().toString().trim();
         if(TextUtils.isEmpty(str)){
             throw new Exception("号码为空！");
         }
         String[] arr=str.split(" ");
-        List<String>numbers=new ArrayList<String>();
+        List<Integer>numbers=new ArrayList<Integer>();
         for(int i=0;i<arr.length;i++){
             String s=arr[i];
             s=s.trim();
@@ -144,11 +120,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 continue;
 
             //字符转整数
-            Integer.valueOf(s);
+            Integer value=Integer.valueOf(s);
             if(numbers.contains(s))
                 throw new Exception(s+",号码重复！");
 
-            numbers.add(s);
+            numbers.add(value);
         }
         if(numbers.size()==0)
             throw new Exception("号码为空！");
@@ -161,14 +137,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    private class NumberGenerateTask extends AsyncTask<List<List<String>>, Integer,List<List<String>>> {
+    private class NumberGenerateTask extends AsyncTask<List<List<Integer>>, Integer,List<List<Integer>>> {
         ProgressDialog pdialog;
         private Context mContext;
         public NumberGenerateTask(Context mContext){
             this.mContext=mContext;
         }
         @Override
-        protected void onPostExecute(List<List<String>> lists) {
+        protected void onPostExecute(List<List<Integer>> lists) {
             pdialog.dismiss();
             Intent intent=new Intent();
             intent.setClass(MainActivity.this,NumberListActivity.class);
@@ -182,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             pdialog.setTitle("正在生成号码组合...");
             pdialog.setMessage("任务正在执行中，请等待...");
             pdialog.setCancelable(false);
-            pdialog.setMax(202);
+            pdialog.setMax(100);
             pdialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pdialog.setIndeterminate(false);//设置对话框的进度条是否显示进度
             pdialog.show();
@@ -194,10 +170,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        protected List<List<String>> doInBackground(List<List<String>>... numberlists) {
+        protected List<List<Integer>> doInBackground(List<List<Integer>>... numberlists) {
             System.gc();
-            List<List<String>> lists=numberlists[0];
-            List<List<String>>numbers=new ArrayList<>();
+            List<List<Integer>> lists=numberlists[0];
+            List<List<Integer>>numbers=new ArrayList<>();
 
             //记录号码的签名（简单转为字符串）
             List<String>signs=new ArrayList<>();
@@ -208,26 +184,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     for(int x3=0;x3<lists.get(2).size();x3++){
                         for(int x4=0;x4<lists.get(3).size();x4++){
                             for(int x5=0;x5<lists.get(4).size();x5++){
-                                for(int x6=0;x6<lists.get(5).size();x6++){
-                                    String number1=lists.get(0).get(x1);
-                                    String number2=lists.get(1).get(x2);
-                                    String number3=lists.get(2).get(x3);
-                                    String number4=lists.get(3).get(x4);
-                                    String number5=lists.get(4).get(x5);
-                                    String number6=lists.get(5).get(x6);
+                                for(int x6=0;x6<lists.get(5).size();x6++) {
+                                    Integer number1 = lists.get(0).get(x1);
+                                    Integer number2 = lists.get(1).get(x2);
+                                    Integer number3 = lists.get(2).get(x3);
+                                    Integer number4 = lists.get(3).get(x4);
+                                    Integer number5 = lists.get(4).get(x5);
+                                    Integer number6 = lists.get(5).get(x6);
 
-                                    List<String>numberList=new ArrayList<>();
+                                    List<Integer> numberList = new ArrayList<>();
                                     numberList.add(number1);
                                     numberList.add(number2);
+                                    if (number2 <= number1){
+                                        continue;
+                                    }
                                     numberList.add(number3);
+                                    if (number3 <= number2){
+                                        continue;
+                                    }
+
                                     numberList.add(number4);
+                                    if (number4 <= number3){
+                                        continue;
+                                    }
                                     numberList.add(number5);
+                                    if (number5 <= number4){
+                                        continue;
+                                    }
                                     numberList.add(number6);
-                                    HashSet<String>hs=new HashSet<>(numberList);
+                                    if (number6 <= number5){
+                                        continue;
+                                    }
+                                    HashSet<Integer>hs=new HashSet<>(numberList);
                                     if(hs.size()<6){
                                         continue;
                                     }
-                                    String[]numberArray=(String[])numberList.toArray(new String[numberList.size()]);
+                                    Integer[]numberArray=(Integer[])numberList.toArray(new Integer[numberList.size()]);
                                     String sign=Arrays.toString(numberArray);
                                     if(!signs.contains(sign)){
                                         numbers.add(numberList);
