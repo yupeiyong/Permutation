@@ -3,30 +3,82 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     android:orientation="horizontal">
-    <TextView
-        android:id="@+id/first"
-        android:layout_marginLeft="15dp"
-        style="@style/textview_number"/>
+<!--    <TextView-->
+<!--        android:id="@+id/first"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        style="@style/textview_number"/>-->
 
-    <TextView
-        android:id="@+id/second"
-        style="@style/textview_number"/>
+<!--    <TextView-->
+<!--        android:id="@+id/second"-->
+<!--        style="@style/textview_number"/>-->
 
-    <TextView
-        android:id="@+id/third"
-        style="@style/textview_number"/>
+<!--    <TextView-->
+<!--        android:id="@+id/third"-->
+<!--        style="@style/textview_number"/>-->
 
-    <TextView
-        android:id="@+id/fourth"
-        style="@style/textview_number"/>
+<!--    <TextView-->
+<!--        android:id="@+id/fourth"-->
+<!--        style="@style/textview_number"/>-->
 
-    <TextView
-        android:id="@+id/fifth"
-        style="@style/textview_number"/>
+<!--    <TextView-->
+<!--        android:id="@+id/fifth"-->
+<!--        style="@style/textview_number"/>-->
 
-    <TextView
-        android:id="@+id/sixth"
-        style="@style/textview_number"/>
+<!--    <TextView-->
+<!--        android:id="@+id/sixth"-->
+<!--        style="@style/textview_number"/>-->
+
+
+
+    <TableLayout
+        android:id="@+id/stock_list_item_table_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1">
+        <TableRow
+            android:id="@+id/stock_list_row">
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:padding="2dip" />
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/first"
+                style="@style/textview_number"/>
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/second"
+                style="@style/textview_number"/>
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/third"
+                style="@style/textview_number"/>
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/fourth"
+                style="@style/textview_number"/>
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/fifth"
+                style="@style/textview_number"/>
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+            <TextView
+                android:id="@+id/sixth"
+                style="@style/textview_number"/>
+            <View
+                style="@style/list_item_cell_seperator_layout"/>
+        </TableRow>
+    </TableLayout>
+
 </LinearLayout>

@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".NumberListActivity">
+    <View
+        style="@style/list_item_seperator_layout"/>
+    <include
+        layout="@layout/list_header"/>
+    <View
+        style="@style/list_item_seperator_layout"/>
     <ListView
         android:id="@+id/lv_number"
         android:layout_width="match_parent"
