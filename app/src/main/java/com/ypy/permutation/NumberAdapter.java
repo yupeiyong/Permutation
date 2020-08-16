@@ -56,12 +56,12 @@ public class NumberAdapter extends BaseAdapter {
         }
         List<Integer>numberList=_numbers.get(i);
         if(numberList!=null){
-            holder.first.setText(numberList.get(0));
-            holder.second.setText(numberList.get(1));
-            holder.third.setText(numberList.get(2));
-            holder.fourth.setText(numberList.get(3));
-            holder.fifth.setText(numberList.get(4));
-            holder.sixth.setText(numberList.get(5));
+            holder.first.setText(String.valueOf(numberList.get(0)));
+            holder.second.setText(String.valueOf(numberList.get(1)));
+            holder.third.setText(String.valueOf(numberList.get(2)));
+            holder.fourth.setText(String.valueOf(numberList.get(3)));
+            holder.fifth.setText(String.valueOf(numberList.get(4)));
+            holder.sixth.setText(String.valueOf(numberList.get(5)));
         }
         return view;
     }
