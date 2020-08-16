@@ -1,5 +1,6 @@
 package com.ypy.permutation;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -143,12 +145,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public NumberGenerateTask(Context mContext){
             this.mContext=mContext;
         }
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected void onPostExecute(List<List<Integer>> lists) {
             pdialog.dismiss();
             Intent intent=new Intent();
             intent.setClass(MainActivity.this,NumberListActivity.class);
-            intent.putExtra(Constant.NumberList, (Serializable)lists);
+            ModelStorage.getInstance().putModel(lists,Constant.NumberListKey);
+            //intent.putExtra(Constant.NumberList, lists);
             startActivity(intent);
         }
 

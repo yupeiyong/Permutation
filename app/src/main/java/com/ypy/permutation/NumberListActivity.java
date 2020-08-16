@@ -1,10 +1,12 @@
 package com.ypy.permutation;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,13 +19,15 @@ import java.util.List;
 
 public class NumberListActivity extends AppCompatActivity implements View.OnClickListener {
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_number_list);
 
         setCustomActionBar();
-        List<List<String>>numbers=  (List<List<String>>) getIntent().getSerializableExtra(Constant.NumberList);
+        //List<List<String>>numbers=  (List<List<String>>) getIntent().getParcelableExtra(Constant.NumberList);
+        List<List<Integer>>numbers=(List<List<Integer>>)ModelStorage.getInstance().getModel(Constant.NumberListKey);
         ListView numberView=findViewById(R.id.lv_number);
         NumberAdapter adapter=new NumberAdapter(numbers);
         numberView.setAdapter(adapter);

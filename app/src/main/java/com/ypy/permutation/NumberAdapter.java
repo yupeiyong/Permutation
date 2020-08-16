@@ -10,9 +10,9 @@ import android.widget.TextView;
 import java.util.List;
 
 public class NumberAdapter extends BaseAdapter {
-    private List<List<String>> _numbers;
+    private List<List<Integer>> _numbers;
     private Context _context;
-    public NumberAdapter(List<List<String>>numbers){
+    public NumberAdapter(List<List<Integer>>numbers){
         this._numbers=numbers;
     }
 
@@ -54,7 +54,7 @@ public class NumberAdapter extends BaseAdapter {
         }else{
             holder=(ViewHolder) view.getTag();
         }
-        List<String>numberList=_numbers.get(i);
+        List<Integer>numberList=_numbers.get(i);
         if(numberList!=null){
             holder.first.setText(numberList.get(0));
             holder.second.setText(numberList.get(1));
