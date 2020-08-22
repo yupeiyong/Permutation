@@ -57,13 +57,20 @@ public class NumberAdapter extends BaseAdapter {
         }
         List<Integer>numberList=_numbers.get(i);
         if(numberList!=null){
-            holder.number.setText(String.valueOf(i+1));
+            int index=i+1;
+            holder.number.setText(String.valueOf(index));
             holder.first.setText(String.valueOf(numberList.get(0)));
             holder.second.setText(String.valueOf(numberList.get(1)));
             holder.third.setText(String.valueOf(numberList.get(2)));
             holder.fourth.setText(String.valueOf(numberList.get(3)));
             holder.fifth.setText(String.valueOf(numberList.get(4)));
             holder.sixth.setText(String.valueOf(numberList.get(5)));
+
+            if(index%5==0){
+                view.setBackgroundResource(R.color.red);
+            }else{
+                view.setBackgroundResource(R.color.white);
+            }
         }
         return view;
     }
