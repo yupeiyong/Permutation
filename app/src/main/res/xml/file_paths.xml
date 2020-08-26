@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+<!--    <external-path-->
+<!--        path="numberList"-->
+<!--        name="external_storage_root" />-->
+<!--    <external-path-->
+<!--        path="Android/data/${applicationId}/"-->
+<!--        name="files_root" />-->
+    <external-path name="external" path="numberList" />
+    <root-path name="root" path="numberList" />
+</paths>
+

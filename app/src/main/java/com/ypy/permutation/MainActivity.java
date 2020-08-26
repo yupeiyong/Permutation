@@ -40,7 +40,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText fourth;
     private EditText fifth;
     private EditText sixth;
-    String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    String[] permissions = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE};
     List<String> mPermissionList = new ArrayList<>();
 
     // private ImageView welcomeImg = null;
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         checkPermission();
-        Date last=new Date(2020,7,30);
+        Date last=new Date(2020,8,5);
         int y,m,d;
         Calendar cal=Calendar.getInstance();
         y=cal.get(Calendar.YEAR);
@@ -192,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public NumberGenerateTask(Context mContext){
             this.mContext=mContext;
         }
+
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected void onPostExecute(List<List<Integer>> lists) {

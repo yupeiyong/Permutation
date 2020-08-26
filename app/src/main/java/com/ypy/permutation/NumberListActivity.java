@@ -1,17 +1,15 @@
 package com.ypy.permutation;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
-import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Rect;
-import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,24 +23,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +86,7 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     public void createPDF()
     {
         try {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/numberList";
+            String path = Environment.getExternalStorageDirectory() + "/numberList";
 
             File dir = new File(path);
             if(!dir.exists())
@@ -118,17 +101,117 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
             headers.add("第4");
             headers.add("第5");
             headers.add("第6");
-            ITextPdfHelper.createTablePdf(file.getPath(),headers,numbers);
-            Toast.makeText(this, "导出为pdf成功！", Toast.LENGTH_SHORT).show();
-        } catch (IOException | DocumentException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ToPdfTask task=new ToPdfTask(this,file.getPath(),headers,numbers.size());
+            task.execute(numbers);
         }
-        finally
-        {
-            //doc.close();
+        catch (Exception ex){
+            ex.printStackTrace();
+            Toast.makeText(this,ex.getMessage(),Toast.LENGTH_LONG).show();
         }
     }
 
+    public void openAssignFolder(String path){
+        File file = new File(path);
+        if(null==file || !file.exists()){
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(getUriForFile(this,file), "file/*");
+        try {
+            startActivity(intent);
+//            startActivity(Intent.createChooser(intent,"选择浏览工具"));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Uri getUriForFile(Context context, File file) {
+        if (context == null || file == null) {
+            throw new NullPointerException();
+        }
+        Uri uri;
+
+        //判断是否是AndroidN以及更高的版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果SDK版本>=24，即：Build.VERSION.SDK_INT >= 24
+            uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileProvider", file);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+        return uri;
+    }
+
+    class ToPdfTask extends AsyncTask<List<List<Integer>>, Integer, String> {
+        private Context _mContext;
+        private ProgressDialog progressDialog;
+        private List<String>_headers;
+        private String _pdfFilePath;
+        private int total;
+        public ToPdfTask(Context mContext,String pdfTargetPath, List<String>headers,int total){
+            _mContext=mContext;
+            _headers=headers;
+            _pdfFilePath=pdfTargetPath;
+            this.total=total;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressDialog.dismiss();
+            Toast.makeText(_mContext,result,Toast.LENGTH_LONG).show();
+            File file=new File(_pdfFilePath);
+            try{
+                //打开导出文件所在文件夹
+                openAssignFolder(file.getPath());
+            }catch (Exception ex){
+                Toast.makeText(_mContext,ex.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog=new ProgressDialog(_mContext);
+            progressDialog.setTitle("正在导出Pdf...");
+            progressDialog.setMessage("正在写入数据，请等待...");
+            progressDialog.setCancelable(false);
+            progressDialog.setMax(total);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setIndeterminate(false);//设置对话框的进度条是否显示进度
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(List<List<Integer>>... lists) {
+            String result="";
+            try{
+                ITextPdfHelper.createTablePdf(_pdfFilePath, _headers, lists[0], new ITextPdfHelper.IToPdfProcess() {
+                    @Override
+                    public void updateCount(int count) {
+                        progressDialog.setProgress(count);
+                    }
+
+                    @Override
+                    public void writeCompleted() {
+                        progressDialog.setMessage("正在生成PDF文件，请等待...");
+                    }
+                });
+                result="导出成功！";
+            }catch (Exception ex){
+                result="导出错误："+ex.getMessage();
+            }
+
+            return result;
+        }
+    }
+    //原生导出pdf方法
 //    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 //    public void createPDF()
 //    {

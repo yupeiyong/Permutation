@@ -27,7 +27,7 @@ public class ITextPdfHelper {
      * @throws IOException
      * @throws DocumentException
      */
-    public static void createTablePdf(String filePath,List<String>headers, List<List<Integer>>numberList) throws IOException, DocumentException {
+    public static void createTablePdf(String filePath, List<String>headers, List<List<Integer>>numberList, IToPdfProcess process) throws IOException, DocumentException {
         Document document = new Document();
         // 创建PdfWriter对象
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -41,7 +41,7 @@ public class ITextPdfHelper {
         // 设置表格的宽度
         //table.setTotalWidth(650);
         // 也可以每列分别设置宽度
-        table.setTotalWidth(new float[] { 130, 80, 80, 80,80,80,80 });
+        table.setTotalWidth(new float[] { 150, 80, 80, 80,80,80,80 });
         // 锁住宽度
         //table.setLockedWidth(true);
         // 设置表格上面空白宽度
@@ -72,8 +72,14 @@ public class ITextPdfHelper {
             for(int c=0;c<6;c++){
                 table.addCell(generateTextCell(String.valueOf(numbers.get(c)),null,color,null));
             }
+            if(process!=null){
+                process.updateCount(rowIndex);
+            }
         }
 
+        if(process!=null){
+            process.writeCompleted();
+        }
         document.add(table);
 
         // 关闭文档
@@ -112,5 +118,12 @@ public class ITextPdfHelper {
             e.printStackTrace();
         }
         return fontChinese;
+    }
+
+    public interface IToPdfProcess{
+        //导入过程中的条数
+        public void updateCount(int count);
+        //写入完成，document.add(table);之前
+        public void writeCompleted();
     }
 }
