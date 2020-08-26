@@ -37,7 +37,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 //    implementation 'com.srxlike.itextpdf:itextpdf:1.0.12.1'
 
-    implementation('com.itextpdf:itextg:5.5.10') {
-        exclude group: 'com.itextpdf.text.pdf', module: 'fonts'
-    }
+//    implementation('com.itextpdf:itextg:5.5.10') {
+//        exclude group: 'com.itextpdf.text.pdf', module: 'fonts'
+//    }
+    implementation files('F:\\Projects\\Android\\Lib\\iTextpdf.jar')
 }

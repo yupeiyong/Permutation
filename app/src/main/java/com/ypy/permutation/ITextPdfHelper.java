@@ -10,11 +10,14 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPRow;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class ITextPdfHelper {
@@ -34,13 +37,13 @@ public class ITextPdfHelper {
         // 添加表格，7列
         PdfPTable table = new PdfPTable(7);
         //设置表格宽度比例为%100
-        table.setWidthPercentage(100);
+        //table.setWidthPercentage(100);
         // 设置表格的宽度
-        table.setTotalWidth(650);
+        //table.setTotalWidth(650);
         // 也可以每列分别设置宽度
-        table.setTotalWidth(new float[] { 160, 80, 80, 80,80,80,80 });
+        table.setTotalWidth(new float[] { 130, 80, 80, 80,80,80,80 });
         // 锁住宽度
-        table.setLockedWidth(true);
+        //table.setLockedWidth(true);
         // 设置表格上面空白宽度
         table.setSpacingBefore(10f);
         // 设置表格下面空白宽度
@@ -48,8 +51,9 @@ public class ITextPdfHelper {
 
         //生成表头
         BaseColor headerBackgroudColor=BaseColor.LIGHT_GRAY;
+        Font chineseFont=setChineseFont();
         for(int i=0;i<headers.size();i++){
-            table.addCell(generateTextCell(headers.get(i),headerBackgroudColor));
+            table.addCell(generateTextCell(headers.get(i),null,headerBackgroudColor,chineseFont));
         }
 //        // 设置表格默认为无边框
 //        table.getDefaultCell().setBorder(0);
@@ -62,46 +66,38 @@ public class ITextPdfHelper {
             if(rowIndex%5==0){
                 color=BaseColor.RED;
             }
-            table.addCell(generateValueCell(rowIndex,color));
+            table.addCell(generateTextCell(String.valueOf(rowIndex),null,color,null));
+
             List<Integer>numbers=numberList.get(r);
             for(int c=0;c<6;c++){
-                table.addCell(generateValueCell(numbers.get(c),color));
+                table.addCell(generateTextCell(String.valueOf(numbers.get(c)),null,color,null));
             }
         }
 
         document.add(table);
+
         // 关闭文档
         document.close();
     }
 
     //生成单元格
-    private static PdfPCell generateValueCell(int cellValue,BaseColor color){
-        PdfPCell cell = new PdfPCell(new Paragraph(cellValue));
-        cell.setPaddingLeft(10);
-
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        if(color!=null){
-            cell.setBorderColor(color);
-        }
-        return cell;
-    }
-
-    //生成单元格
-    private static PdfPCell generateTextCell(String cellValue,BaseColor color){
-        PdfPCell cell = new PdfPCell(new Paragraph(cellValue));
+    private static PdfPCell generateTextCell(String cellValue,BaseColor borderColor,BaseColor backgroundColor,Font font){
+        PdfPCell cell =font==null? new PdfPCell(new Paragraph(cellValue)):new PdfPCell(new Paragraph(cellValue,font));
         cell.setPaddingLeft(10);
 
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        if(color!=null){
-            cell.setBorderColor(color);
+        if(borderColor!=null){
+            cell.setBorderColor(borderColor);
+        }
+        if(backgroundColor!=null){
+            cell.setBackgroundColor(backgroundColor);
         }
         return cell;
     }
 
 
-    public Font setChineseFont() {
+    private static Font setChineseFont() {
         BaseFont bf = null;
         Font fontChinese = null;
         try {
