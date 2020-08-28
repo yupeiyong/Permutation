@@ -5,8 +5,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +16,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.itextpdf.text.DocumentException;
+import com.ypy.permutation.utils.FileUtils;
+import com.ypy.permutation.utils.OpenFileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,8 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NumberListActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "NumberListActivity";
     private ListView numberListView;
     private List<List<Integer>>numbers;
+
+    private String mFilePath;
+    private String mFileName;
+    private String mContentType = "application/pdf";//文件类型：pdf
+    private String mPDFPath;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +63,10 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
 
         Button btnExport=findViewById(R.id.btn_export);
         btnExport.setOnClickListener(this);
+
+        FileUtils.init();
+        mFilePath = FileUtils.getFileDir() + File.separator;
+        mPDFPath = FileUtils.getFileDir() + File.separator + "numbers.pdf";
     }
 
     private void setCustomActionBar() {
@@ -86,13 +102,17 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     public void createPDF()
     {
         try {
-            String path = Environment.getExternalStorageDirectory() + "/numberList";
+            //文件在手机内存存储的路径
+//            final String saveurl="/download/";
+            final String saveurl="/numberList/files/";
+            // 储存下载文件的目录
+            String savePath = isExistDir(saveurl);
+            mFileName = "number.pdf";
+            File file = new File(savePath, mFileName);
+            if (file.exists()) {
+                file.delete();
+            }
 
-            File dir = new File(path);
-            if(!dir.exists())
-                dir.mkdirs();
-
-            File file = new File(dir, "number.pdf");
             List<String>headers=new ArrayList<>();
             headers.add("序号");
             headers.add("第1");
@@ -110,37 +130,72 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public void openAssignFolder(String path){
-        File file = new File(path);
-        if(null==file || !file.exists()){
-            return;
+    /**
+     * @param saveDir
+     * @return
+     * @throws IOException
+     * 判断下载目录是否存在
+     */
+    private String isExistDir(String saveDir) throws IOException {
+        // 下载位置
+//        File downloadFile = new File(Environment.getExternalStorageDirectory().getPath() + "/download/", saveDir);
+        File downloadFile = new File(Environment.getExternalStorageDirectory().getPath() , saveDir);
+        if (!downloadFile.mkdirs()) {
+            downloadFile.createNewFile();
         }
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(getUriForFile(this,file), "file/*");
-        try {
-            startActivity(intent);
-//            startActivity(Intent.createChooser(intent,"选择浏览工具"));
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
+        String savePath = downloadFile.getAbsolutePath();
+        Log.w(TAG,"下载目录："+savePath);
+        return savePath;
     }
 
-    private static Uri getUriForFile(Context context, File file) {
-        if (context == null || file == null) {
-            throw new NullPointerException();
-        }
-        Uri uri;
-
-        //判断是否是AndroidN以及更高的版本
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果SDK版本>=24，即：Build.VERSION.SDK_INT >= 24
-            uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileProvider", file);
-        } else {
-            uri = Uri.fromFile(file);
-        }
-        return uri;
-    }
+//    private Uri getUriForFile(Context context, File file) {
+//        if (context == null || file == null) {
+//            throw new NullPointerException();
+//        }
+//        Uri uri;
+//        if (Build.VERSION.SDK_INT >= 24) {
+//            uri = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID +".fileprovider", file);
+//            uri=Uri.parse("file:"+file.getParent());
+//        } else {
+//            uri = Uri.fromFile(file);
+//        }
+//        return uri;
+//
+////        if (!file.getParentFile().exists()) {
+////            file.getParentFile().mkdirs();
+////        }
+////        Uri imageUri;
+////        String path = file.getPath();
+////        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+////            imageUri = Uri.fromFile(file);
+////        } else {
+////            //兼容android7.0 使用共享文件的形式
+////            ContentValues contentValues = new ContentValues(1);
+////            contentValues.put(MediaStore.Images.Media.DATA, path);
+////            imageUri = this.getApplication().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+////        }
+////        return imageUri;
+//    }
+//
+//    public void openAssignFolder(String path){
+//        File file = new File(path);
+//        if(null==file || !file.exists()){
+//            return;
+//        }
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        intent.setDataAndType(getUriForFile(this,file), "file/*");
+//        try {
+////            startActivity(intent);
+//            startActivity(Intent.createChooser(intent,"打开文件夹"));
+////            startActivity(Intent.createChooser(intent,"选择浏览工具"));
+//        } catch (ActivityNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     class ToPdfTask extends AsyncTask<List<List<Integer>>, Integer, String> {
         private Context _mContext;
@@ -155,6 +210,7 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
             this.total=total;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -163,7 +219,9 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
             File file=new File(_pdfFilePath);
             try{
                 //打开导出文件所在文件夹
-                openAssignFolder(file.getPath());
+                //openAssignFolder(file.getPath());
+                FileUtils.startActionFile(getApplicationContext(),file,mContentType);
+                //OpenFileUtils.openFile(_mContext, file);
             }catch (Exception ex){
                 Toast.makeText(_mContext,ex.getMessage(),Toast.LENGTH_LONG).show();
             }
@@ -211,64 +269,4 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
             return result;
         }
     }
-    //原生导出pdf方法
-//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//    public void createPDF()
-//    {
-//        try {
-//            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/numberList";
-//
-//            File dir = new File(path);
-//            if(!dir.exists())
-//                dir.mkdirs();
-//
-//            File file = new File(dir, "number.pdf");
-//            //file.createNewFile();
-//            FileOutputStream fOut = new FileOutputStream(file);
-//
-//            // create a new document
-//            PdfDocument document = new PdfDocument();
-//
-//
-//            // crate a page description
-////            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(numberListView.getWidth(), numberListView.getHeight()*10, 10).create();
-////
-////            // start a page
-////            PdfDocument.Page page = document.startPage(pageInfo);
-//
-//            // draw something on the page
-//            View content = numberListView;
-//
-//            for (int i = 0; i < 10; i++) {
-//                int webMarginTop = i * numberListView.getHeight();
-//
-//                PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(numberListView.getWidth(), numberListView.getHeight(), i+1).create();
-//
-//                // start a page
-//                PdfDocument.Page page = document.startPage(pageInfo);
-//                page.getCanvas().translate(0, -webMarginTop);
-//                content.draw(page.getCanvas());
-//
-//                document.finishPage(page);
-//            }
-//
-//            //content.draw(page.getCanvas());
-//
-//            // finish the page
-//            //document.finishPage(page);
-//
-//            // write the document content
-//            document.writeTo(fOut);
-//
-//            //close the document
-//            document.close();
-//            Toast.makeText(this, "导出为pdf成功！", Toast.LENGTH_SHORT).show();
-//        } catch (IOException e) {
-//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
-//        finally
-//        {
-//            //doc.close();
-//        }
-//    }
 }
