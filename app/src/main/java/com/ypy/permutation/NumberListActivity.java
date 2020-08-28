@@ -27,8 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ypy.permutation.utils.FileUtils;
-import com.ypy.permutation.utils.OpenFileUtils;
+import com.ypy.filelib.FileUtils;
+import com.ypy.filelib.OpenFileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,10 +40,8 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     private ListView numberListView;
     private List<List<Integer>>numbers;
 
-    private String mFilePath;
     private String mFileName;
-    private String mContentType = "application/pdf";//文件类型：pdf
-    private String mPDFPath;
+    private String mPDFPath="download/files";
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -53,7 +51,6 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_number_list);
 
         setCustomActionBar();
-        //List<List<String>>numbers=  (List<List<String>>) getIntent().getParcelableExtra(Constant.NumberList);
         TextView txtTotal=findViewById(R.id.txt_number_total);
         numbers=(List<List<Integer>>)ModelStorage.getInstance().getModel(Constant.NumberListKey);
         numberListView=findViewById(R.id.lv_number);
@@ -63,10 +60,6 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
 
         Button btnExport=findViewById(R.id.btn_export);
         btnExport.setOnClickListener(this);
-
-        FileUtils.init();
-        mFilePath = FileUtils.getFileDir() + File.separator;
-        mPDFPath = FileUtils.getFileDir() + File.separator + "numbers.pdf";
     }
 
     private void setCustomActionBar() {
@@ -102,11 +95,8 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     public void createPDF()
     {
         try {
-            //文件在手机内存存储的路径
-//            final String saveurl="/download/";
-            final String saveurl="/numberList/files/";
             // 储存下载文件的目录
-            String savePath = isExistDir(saveurl);
+            String savePath = isExistDir(mPDFPath);
             mFileName = "number.pdf";
             File file = new File(savePath, mFileName);
             if (file.exists()) {
@@ -138,7 +128,6 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
      */
     private String isExistDir(String saveDir) throws IOException {
         // 下载位置
-//        File downloadFile = new File(Environment.getExternalStorageDirectory().getPath() + "/download/", saveDir);
         File downloadFile = new File(Environment.getExternalStorageDirectory().getPath() , saveDir);
         if (!downloadFile.mkdirs()) {
             downloadFile.createNewFile();
@@ -147,55 +136,6 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         Log.w(TAG,"下载目录："+savePath);
         return savePath;
     }
-
-//    private Uri getUriForFile(Context context, File file) {
-//        if (context == null || file == null) {
-//            throw new NullPointerException();
-//        }
-//        Uri uri;
-//        if (Build.VERSION.SDK_INT >= 24) {
-//            uri = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID +".fileprovider", file);
-//            uri=Uri.parse("file:"+file.getParent());
-//        } else {
-//            uri = Uri.fromFile(file);
-//        }
-//        return uri;
-//
-////        if (!file.getParentFile().exists()) {
-////            file.getParentFile().mkdirs();
-////        }
-////        Uri imageUri;
-////        String path = file.getPath();
-////        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-////            imageUri = Uri.fromFile(file);
-////        } else {
-////            //兼容android7.0 使用共享文件的形式
-////            ContentValues contentValues = new ContentValues(1);
-////            contentValues.put(MediaStore.Images.Media.DATA, path);
-////            imageUri = this.getApplication().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-////        }
-////        return imageUri;
-//    }
-//
-//    public void openAssignFolder(String path){
-//        File file = new File(path);
-//        if(null==file || !file.exists()){
-//            return;
-//        }
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.addCategory(Intent.CATEGORY_DEFAULT);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//        intent.setDataAndType(getUriForFile(this,file), "file/*");
-//        try {
-////            startActivity(intent);
-//            startActivity(Intent.createChooser(intent,"打开文件夹"));
-////            startActivity(Intent.createChooser(intent,"选择浏览工具"));
-//        } catch (ActivityNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     class ToPdfTask extends AsyncTask<List<List<Integer>>, Integer, String> {
         private Context _mContext;
@@ -215,13 +155,11 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressDialog.dismiss();
-            Toast.makeText(_mContext,result,Toast.LENGTH_LONG).show();
+            Toast.makeText(_mContext,result+"，文件位置：下载文件夹/files文件夹。",Toast.LENGTH_LONG).show();
             File file=new File(_pdfFilePath);
             try{
                 //打开导出文件所在文件夹
-                //openAssignFolder(file.getPath());
-                FileUtils.startActionFile(getApplicationContext(),file,mContentType);
-                //OpenFileUtils.openFile(_mContext, file);
+                OpenFileUtils.openFile(_mContext, file);
             }catch (Exception ex){
                 Toast.makeText(_mContext,ex.getMessage(),Toast.LENGTH_LONG).show();
             }

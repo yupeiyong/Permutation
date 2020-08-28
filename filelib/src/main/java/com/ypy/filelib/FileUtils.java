@@ -19,7 +19,7 @@ import java.io.File;
 
 public class FileUtils {
 
-    private static String APP_DIR_NAME ="numberList";
+    private static String APP_DIR_NAME ="download";
     private static String FILE_DIR_NAME = "files";
     private static String mRootDir;
     private static String mAppRootDir;
@@ -77,6 +77,8 @@ public class FileUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         intent.setDataAndType(getUriForFile(context, file), contentType);
+
+        //必须使用addFlags,不能使用setFlags否则不能正确设置读写权限
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);//增加读写权限
         context.startActivity(intent);
@@ -99,26 +101,6 @@ public class FileUtils {
         activity.startActivityForResult(intent, requestCode);
     }
     
-   
-//    public static Uri getUriForFile(Context context, File file) {
-//        if (context == null || file == null) {
-//            throw new NullPointerException();
-//        }
-//        Uri uri;
-//        if (Build.VERSION.SDK_INT >= 24) {
-//            uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", file);
-//
-//            uri = androidx.core.content.FileProvider.getUriForFile(context,
-//                    BuildConfig.APPLICATION_ID + ".fileprovider",
-//                    file);
-//        } else {
-//            uri = Uri.fromFile(file);
-//        }
-////        String test=uri.getPath();
-////        uri=Uri.parse("content://"+file.getPath());
-////        test=uri.getPath();
-//        return uri;
-//    }
 
     public static Uri getUriForFile(Context mContext, File file) {
         Uri fileUri = null;

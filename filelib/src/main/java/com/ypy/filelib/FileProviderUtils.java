@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 
-import com.ypy.permutation.BuildConfig;
-
 import java.io.File;
 
 //打开文件的辅助类
@@ -24,7 +22,7 @@ public class FileProviderUtils {
  
     public static Uri getUriForFile24(Context mContext, File file) {
         Uri fileUri = androidx.core.content.FileProvider.getUriForFile(mContext,
-                BuildConfig.APPLICATION_ID + ".fileprovider",
+                mContext.getPackageName() + ".fileprovider",
                 file);
         return fileUri;
     }
@@ -36,6 +34,7 @@ public class FileProviderUtils {
                                             boolean writeAble) {
         if (Build.VERSION.SDK_INT >= 24) {
             intent.setDataAndType(getUriForFile(mContext, file), type);
+            //使用addFlags添加读写权限
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             if (writeAble) {
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
