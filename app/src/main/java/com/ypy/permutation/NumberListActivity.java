@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ypy.filelib.FileUtils;
+import com.ypy.filelib.OpenDirecroty;
 import com.ypy.filelib.OpenFileUtils;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
 
     private String mFileName;
     private String mPDFPath="download/files";
+    private String mFileType="application/pdf";
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -155,11 +157,13 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressDialog.dismiss();
-            Toast.makeText(_mContext,result+"，文件位置：下载文件夹/files文件夹。",Toast.LENGTH_LONG).show();
+            Toast.makeText(_mContext,result+"，文件位置：Download/files文件夹。",Toast.LENGTH_LONG).show();
             File file=new File(_pdfFilePath);
+            //file=new File(file.getParent());
             try{
                 //打开导出文件所在文件夹
                 OpenFileUtils.openFile(_mContext, file);
+//                OpenDirecroty.open(_mContext,file,mFileType);
             }catch (Exception ex){
                 Toast.makeText(_mContext,ex.getMessage(),Toast.LENGTH_LONG).show();
             }
