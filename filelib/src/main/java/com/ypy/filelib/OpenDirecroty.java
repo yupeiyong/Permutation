@@ -8,7 +8,6 @@ import java.io.File;
 public class OpenDirecroty {
     /**
      * Android传入type打开文件
-     * 未方法未能实现打开指定文件夹的目的
      * @param mContext
      * @param file
      * @param type

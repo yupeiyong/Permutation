@@ -17,11 +17,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 import com.ypy.filelib.FileUtils;
 import com.ypy.filelib.OpenDirecroty;
 import com.ypy.filelib.OpenFileUtils;
+import com.ypy.filelib.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +45,18 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     private ListView numberListView;
     private List<List<Integer>>numbers;
 
+    //索引，通过筛选得出的索引
+    private List<Integer> indexs=new ArrayList<>();
     private String mFileName;
+
+    //导出pdf的文件夹
     private String mPDFPath="download/files";
     private String mFileType="application/pdf";
+
+    //奇数最小和最大数量
+    private int minCount=1;
+    private int maxCount=5;
+    private EditText etOddCount;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -62,6 +75,10 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
 
         Button btnExport=findViewById(R.id.btn_export);
         btnExport.setOnClickListener(this);
+
+        Button btnSearch=findViewById(R.id.btn_search);
+        btnSearch.setOnClickListener(this);
+        etOddCount=findViewById(R.id.et_odd_Count);
     }
 
     private void setCustomActionBar() {
@@ -91,6 +108,44 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
             case R.id.btn_export:
                 createPDF();
                 break;
+            case R.id.btn_search:
+                queryNumbers();
+                break;
+        }
+    }
+
+    //筛选号码
+    private void queryNumbers(){
+        String str=etOddCount.getText().toString();
+        if(TextUtils.isEmpty(str)){
+            Toast.makeText(this,"奇数个数为空！",Toast.LENGTH_LONG).show();
+            etOddCount.setFocusable(true);
+            return;
+        }
+        try{
+            if(!StringUtils.isNumeric(str))
+                throw new Exception("请输入整数！");
+
+            int count=Integer.valueOf(str);
+            if(count<minCount||count>maxCount)
+                throw new Exception("奇数数量范围1-5！");
+
+            //先清除旧数据
+            indexs.clear();
+            for(int i=0;i<numbers.size();i++){
+                List<Integer>row=numbers.get(i);
+                int oCount=0;
+                for(int c=0;c<row.size();c++){
+                    oCount+=row.get(c) %2;
+                }
+                if(oCount==count){
+                    indexs.add(i);
+                }
+            }
+        }catch (Exception ex){
+            Toast.makeText(this,ex.getMessage(),Toast.LENGTH_LONG).show();
+            etOddCount.setFocusable(true);
+            return;
         }
     }
 

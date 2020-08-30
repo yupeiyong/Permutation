@@ -54,21 +54,45 @@
         <item name="android:layout_height">45dp</item>
     </style>
 
-    <style name="textbox_style">
+    <style name="textbox_style_base">
         <item name="android:textSize">@dimen/textSize16</item>
         <item name="android:paddingLeft">@dimen/textSize10</item>
         <item name="android:paddingRight">@dimen/textSize10</item>
         <item name="android:paddingTop">@dimen/textSize10</item>
         <item name="android:paddingBottom">@dimen/textSize10</item>
         <item name="android:layout_marginLeft">@dimen/textSize10</item>
-<!--        <item name="android:layout_marginRight">@dimen/textSize10</item>-->
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="textbox_style" parent="textbox_style_base">
+        <item name="android:textSize">@dimen/textSize16</item>
+        <item name="android:paddingLeft">@dimen/textSize10</item>
+        <item name="android:paddingRight">@dimen/textSize10</item>
+        <item name="android:paddingTop">@dimen/textSize10</item>
+        <item name="android:paddingBottom">@dimen/textSize10</item>
+        <item name="android:layout_marginLeft">@dimen/textSize10</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:lines">1</item>
         <item name="android:hint">输入号码，多个用空格隔开</item>
     </style>
-
+    <style name="textbox_title_style" parent="textbox_style_base">
+        <item name="android:textSize">@dimen/textSize16</item>
+        <item name="android:paddingLeft">@dimen/textSize10</item>
+        <item name="android:paddingRight">@dimen/textSize10</item>
+        <item name="android:paddingTop">@dimen/textSize10</item>
+        <item name="android:paddingBottom">@dimen/textSize10</item>
+        <item name="android:layout_marginLeft">@dimen/textSize10</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:hint">1-5个奇数</item>
+    </style>
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
