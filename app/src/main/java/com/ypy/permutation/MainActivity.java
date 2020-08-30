@@ -89,16 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         checkPermission();
-        Date last=new Date(2020,8,15);
-        int y,m,d;
-        Calendar cal=Calendar.getInstance();
-        y=cal.get(Calendar.YEAR);
-        m=cal.get(Calendar.MONTH);
-        d=cal.get(Calendar.DATE);
-        Date now=new Date(y,m,d);
-        if(now.after(last))
-            return;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setCustomActionBar();
