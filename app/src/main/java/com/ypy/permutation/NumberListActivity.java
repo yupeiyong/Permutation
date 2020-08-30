@@ -43,10 +43,15 @@ import java.util.List;
 public class NumberListActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "NumberListActivity";
     private ListView numberListView;
+
+    //界面上用于显示的数据，当筛选后此集合会改变
     private List<List<Integer>>numbers;
 
-    //索引，通过筛选得出的索引
-    private List<Integer> indexs=new ArrayList<>();
+    //显示条数
+    private TextView txtTotal;
+    //原始数据
+    private List<List<Integer>> originalNumbers;
+
     private String mFileName;
 
     //导出pdf的文件夹
@@ -58,6 +63,9 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     private int maxCount=5;
     private EditText etOddCount;
 
+    //数据适配器
+    private NumberAdapter adapter;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +74,11 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_number_list);
 
         setCustomActionBar();
-        TextView txtTotal=findViewById(R.id.txt_number_total);
+        txtTotal=findViewById(R.id.txt_number_total);
         numbers=(List<List<Integer>>)ModelStorage.getInstance().getModel(Constant.NumberListKey);
+        originalNumbers=new ArrayList<>(numbers);
         numberListView=findViewById(R.id.lv_number);
-        NumberAdapter adapter=new NumberAdapter(numbers);
+        adapter=new NumberAdapter(numbers);
         numberListView.setAdapter(adapter);
         txtTotal.setText("共有"+ String.valueOf(numbers.size())+"条数据");
 
@@ -117,31 +126,41 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
     //筛选号码
     private void queryNumbers(){
         String str=etOddCount.getText().toString();
-        if(TextUtils.isEmpty(str)){
-            Toast.makeText(this,"奇数个数为空！",Toast.LENGTH_LONG).show();
-            etOddCount.setFocusable(true);
-            return;
-        }
-        try{
-            if(!StringUtils.isNumeric(str))
-                throw new Exception("请输入整数！");
 
-            int count=Integer.valueOf(str);
-            if(count<minCount||count>maxCount)
-                throw new Exception("奇数数量范围1-5！");
+        try{
+            //条件是否为空
+            boolean isEmpty=false;
+            int count=0;
+            if(TextUtils.isEmpty(str)){
+                isEmpty=true;
+            }else{
+                if(!StringUtils.isNumeric(str))
+                    throw new Exception("请输入整数！");
+
+                count=Integer.valueOf(str);
+                if(count<minCount||count>maxCount)
+                    throw new Exception("奇数数量范围1-5！");
+            }
 
             //先清除旧数据
-            indexs.clear();
-            for(int i=0;i<numbers.size();i++){
-                List<Integer>row=numbers.get(i);
-                int oCount=0;
-                for(int c=0;c<row.size();c++){
-                    oCount+=row.get(c) %2;
-                }
-                if(oCount==count){
-                    indexs.add(i);
+            numbers.clear();
+            for(int i=0;i<originalNumbers.size();i++){
+                List<Integer>row=originalNumbers.get(i);
+                if(isEmpty){
+                    //条件为空直接写入集合
+                    numbers.add(row);
+                }else{
+                    int oCount=0;
+                    for(int c=0;c<row.size();c++){
+                        oCount+=row.get(c) %2;
+                    }
+                    if(oCount==count){
+                        numbers.add(row);
+                    }
                 }
             }
+            txtTotal.setText("共有"+ String.valueOf(numbers.size())+"条数据");
+            adapter.notifyDataSetChanged();
         }catch (Exception ex){
             Toast.makeText(this,ex.getMessage(),Toast.LENGTH_LONG).show();
             etOddCount.setFocusable(true);
@@ -149,6 +168,7 @@ public class NumberListActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    //导出pdf
     public void createPDF()
     {
         try {

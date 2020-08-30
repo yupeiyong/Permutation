@@ -8,7 +8,8 @@
     tools:context=".NumberListActivity">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="2dp">
         <TextView
             android:id="@+id/txt_number_total"
             android:layout_width="match_parent"
@@ -23,13 +24,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@drawable/btn_selector"
-            android:padding="1dp"
+            android:minWidth="80dp"
+            android:minHeight="32dp"
+            android:padding="2dp"
             android:textSize="14dp"
             android:text="导出Pdf"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="2dp">
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -40,9 +44,11 @@
             android:text="奇数数量："/>
         <EditText
             android:id="@+id/et_odd_Count"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             style="@style/textbox_title_style"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:textSize="16dp"
             android:inputType="number"
             android:layout_toRightOf="@+id/tv_title"
@@ -53,8 +59,11 @@
             android:id="@+id/btn_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="1dp"
+            android:minWidth="80dp"
+            android:minHeight="32dp"
+            android:padding="2dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:background="@drawable/btn_selector"
             android:textSize="14dp"
             android:text="筛选"/>
